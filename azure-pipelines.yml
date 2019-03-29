@@ -4,6 +4,14 @@ resources:
 - repo: self
   clean: true
 
+trigger:
+   branches:
+       include:
+       - '*'
+   paths:
+       exclude:
+       - README.md
+
 queue:
   name: Hosted
   demands:
