@@ -1,13 +1,14 @@
+name: 1.4$(Rev:.r)
+
 resources:
 - repo: self
   clean: true
+
 queue:
   name: Hosted
-  demands: 
+  demands:
   - npm
   - DotNetFramework
-
-name: 1.4$(Rev:.r)
 
 steps:
 - task: Npm@0
@@ -19,52 +20,37 @@ steps:
   displayName: 'Fetch git: https://github.com/sam-cogan/azure-xplat-arm-tooling'
   inputs:
     RepositoryUrl: 'https://github.com/sam-cogan/azure-xplat-arm-tooling'
-
     RepositoryPath: '$(Build.GitDirectory)\snippetsrepo'
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\extension\'
   inputs:
     SourceFolder: Extension
-
     TargetFolder: '$(build.artifactstagingdirectory)\extension\'
-
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(build.artifactstagingdirectory)\extension\snippets'
   inputs:
     SourceFolder: '$(Build.GitDirectory)\snippetsrepo\VSCode'
-
     Contents: armsnippets.json
-
     TargetFolder: '$(build.artifactstagingdirectory)\extension\snippets'
-
     OverWrite: true
 
 - task: PowerShell@1
   displayName: 'PowerShell Script'
   inputs:
     scriptName: tools/UpdateSnippetFile.ps1
-
     arguments: '-pathToFile $(build.artifactstagingdirectory)\extension\snippets\armsnippets.json -pathToPackageFile $(build.artifactstagingdirectory)\extension\package.json -buildNumber $(Build.BuildNumber)'
-
 
 - task: CmdLine@1
   displayName: 'Run vsce '
   inputs:
     filename: 'vsce '
-
     arguments: package
-
     workingFolder: '$(build.artifactstagingdirectory)\extension\'
-
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: arm-snippets-$(Build.BuildNumber).vsix'
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)\extension\arm-snippets-$(Build.BuildNumber).vsix'
-
     ArtifactName: 'arm-snippets-$(Build.BuildNumber).vsix'
-
-
-
