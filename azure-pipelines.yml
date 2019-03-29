@@ -14,12 +14,21 @@ trigger:
 
 jobs:
 - job: "Tests"
+  strategy:
+    matrix:
+      win:
+        vm: vs2017-win2016
+      mac:
+        vm: macos-10.13
+      linux:
+        vm: ubuntu-16.04
+  pool:
+    vmImage: $(vm)
   steps:
-   - script: |
-      echo Hello
-      echo AzureDay Poland 2019
+   - template: azure-pipeline-tests.yml
 
 - job: "Build_and_Publish"
+  dependsOn: "Tests"
   steps:
   - task: Npm@0
     displayName: 'npm install'

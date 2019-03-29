@@ -1,0 +1,4 @@
+steps:
+   - script: echo Hello from $(vm)
+   - script: |
+      echo AzureDay Poland 2019
